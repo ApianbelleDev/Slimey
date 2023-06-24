@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3 uid="uid://dfn87fcsr5k3g"]
+
+[ext_resource type="Texture2D" uid="uid://57isyc3l1fsv" path="res://res/Spritesheets/Slimey_anim_sheet.png" id="1_paac0"]
+
+[sub_resource type="GDScript" id="GDScript_6omuh"]
+script/source = "extends CharacterBody2D
+
+@export var speed = 100
+@export var jump_speed = -300
+@export var gravity = 500
+
+func _physics_process(delta):
+	#add gravity downwards every frame
+	velocity.y += gravity * delta
+	
+	velocity.x = Input.get_axis(\"move_left\", \"move_right\") * speed
+	
+	move_and_slide()
+	
+	#Only allow jumping when on ground
+	if Input.is_action_pressed(\"jump\") and is_on_floor():
+		velocity.y = jump_speed
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jqst0"]
+size = Vector2(18, 9)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jy5qy"]
+atlas = ExtResource("1_paac0")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cql43"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jy5qy")
+}],
+"loop": true,
+"name": &"None",
+"speed": 5.0
+}]
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = SubResource("GDScript_6omuh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3.5)
+shape = SubResource("RectangleShape2D_jqst0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_cql43")
+animation = &"None"
